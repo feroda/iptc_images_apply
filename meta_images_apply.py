@@ -2,11 +2,14 @@
 """
 Lo script prende in ingresso/input: 
 
-- il percorso della cartella con le immagini da processare
-- il percorso del foglio di calcolo che contiene i metadati
-- il percorso della cartella in cui verranno copiati i file processati (se non esiste viene creata)
+1- il percorso della cartella con le immagini da processare
+2- il percorso del foglio di calcolo che contiene i metadati
+3- [opzionalmente] il percorso della cartella in cui verranno copiati i file processati (se non esiste viene creata)
 
-Esempio file:
+Se non viene specificato il terzo parametro,
+lo script visualizza a video i metadati che avrebbe inserito.
+
+Esempio file .xls o .ods:
 Name	Description	Keywords	Copyright Notice
 62507-c.jpg;Rare and endangered trees unique to China, 1958;Rare , endangered, trees ,unique, plants, botany, wildlife, China, 1958, 1950s;	Colaimages
 
@@ -24,7 +27,7 @@ import pandas as pd
 
 from iptcinfo3 import IPTCInfo
 
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+# logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 logger = logging.getLogger("metaphotos")
 
 COL_NAMES = ["Name", "Description", "Keywords", "Copyright"]
@@ -56,8 +59,8 @@ def main(argv):
             continue
         
         stats["Num. Files Read"] += 1
-        saved = False
         fname_img = os.path.join(input_path, basename_img)
+        print(f"\n[START] Processing line {i}, image={fname_img}...")
         logger.debug(f"{fname_img=} {df.at[i, 'Name']=}")
         if os.path.exists(fname_img):
 
@@ -84,25 +87,29 @@ def main(argv):
             if copyright_cell:
                 iptc["copyright notice"] = copyright_cell
 
-            for k, v in iptc._data.items():
-                if isinstance(v, str):
-                    logger.debug("{} {}".format(k, v))
-                elif isinstance(v, list):
-                    try:
-                        logger.debug("{} {}".format(k, [x.decode() for x in v]))
-                    except:
-                        logger.debug("{} {}".format(k, v))
-                else:
-                    logger.debug("{} {}".format(k, v.decode()))
-
             if output_path:
-                iptc.save_as(os.path.join(output_path, basename_img))
+                fname_dest_img = os.path.join(output_path, basename_img)
+                iptc.save_as(fname_dest_img)
                 stats["Num. Files Updated And Saved"] += 1
-                saved = True
+                print(f"[END] Processed line {i}, saved image={fname_dest_img}")
 
-            print(f"- Processed line {i} with image={fname_img} {saved=}")
+            else:
+                for k, v in iptc._data.items():
+                    
+                    value = v
+                    if v and isinstance(v, list) and isinstance(v[0], bytes):
+                        value = [x.decode() for x in v]
+                    elif isinstance(v, bytes):
+                        value = v.decode()
 
-    print(stats)
+                    print(f"{k}: {value}")
+
+                print(f"[END] Processed line {i}, not saved image={fname_img}")
+
+    print("\n---- STATS ----")
+    for k, v in stats.items():
+        print(f"- {k}: {v}")
+    print()
 
 
 if __name__ == "__main__":
