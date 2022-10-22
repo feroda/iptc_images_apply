@@ -31,6 +31,14 @@ from iptcinfo3 import IPTCInfo
 logger = logging.getLogger("metaphotos")
 
 COL_NAMES = ["Name", "Description", "Keywords", "Copyright"]
+META_ID_TO_STR = {
+    120: 'caption/abstract',
+    116: 'copyright notice',
+    25: 'keywords',
+    15: 'category',
+    20: 'supplemental category',
+    118: 'contact'
+}
 
 
 def main(argv):
@@ -60,7 +68,7 @@ def main(argv):
         
         stats["Num. Files Read"] += 1
         fname_img = os.path.join(input_path, basename_img)
-        print(f"\n[START] Processing line {i}, image={fname_img}...")
+        print(f"\n[START] Processing line {i}, image={fname_img} ...")
         logger.debug(f"{fname_img=} {df.at[i, 'Name']=}")
         if os.path.exists(fname_img):
 
@@ -95,14 +103,16 @@ def main(argv):
 
             else:
                 for k, v in iptc._data.items():
-                    
+
+                    key = META_ID_TO_STR.get(k, k)
                     value = v
+
                     if v and isinstance(v, list) and isinstance(v[0], bytes):
                         value = [x.decode() for x in v]
                     elif isinstance(v, bytes):
                         value = v.decode()
 
-                    print(f"{k}: {value}")
+                    print(f"* {key}: {value}")
 
                 print(f"[END] Processed line {i}, not saved image={fname_img}")
 
