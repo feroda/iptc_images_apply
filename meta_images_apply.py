@@ -51,6 +51,9 @@ def main(argv):
         output_path = argv[3]
         # Create output dir if not exists
         os.makedirs(output_path, exist_ok=True)
+    else:
+        logging.basicConfig(format='%(message)s', level=logging.INFO)
+
 
     stats = {
         "Input path": input_path,
