@@ -1,24 +1,4 @@
 #!/usr/bin/env python
-"""
-Lo script prende in ingresso/input: 
-
-1- il percorso della cartella con le immagini da processare
-2- il percorso del foglio di calcolo che contiene i metadati
-3- [opzionalmente] il percorso della cartella in cui verranno copiati i file processati (se non esiste viene creata)
-
-Se non viene specificato il terzo parametro,
-lo script visualizza a video i metadati che avrebbe inserito.
-
-Esempio file .xls o .ods:
-Name	Description	Keywords	Copyright Notice
-62507-c.jpg;Rare and endangered trees unique to China, 1958;Rare , endangered, trees ,unique, plants, botany, wildlife, China, 1958, 1950s;	Colaimages
-
-Per ogni immagine nella cartella, lo script: 
-
-- leggerà dal foglio di calcolo i metadati da applicare
-- se esistono, creerà una copia dell'immagine nella cartella di destinazione con i metadati applicati
-- stamperà un report di quanti file sono stati processati
-"""
 
 import sys
 import os
