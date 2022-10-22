@@ -28,5 +28,5 @@ Richiede Python>=3.6
 
 ```
 $ pip install -r requirements
-$ ./meta_images_apply.py input_imgs myxlsfile.xls output_imgs
+$ ./iptc_images_apply.py input_imgs myxlsfile.xls output_imgs
 ```
