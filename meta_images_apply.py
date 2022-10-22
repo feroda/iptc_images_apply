@@ -53,6 +53,9 @@ def main(argv):
         os.makedirs(output_path, exist_ok=True)
 
     stats = {
+        "Input path": input_path,
+        "XLS File": fname_xls,
+        "Output path": output_path or "not specified",
         "Num. Files Read": 0,
         "Num. Files Updated And Saved": 0,
     }
@@ -68,7 +71,7 @@ def main(argv):
         
         stats["Num. Files Read"] += 1
         fname_img = os.path.join(input_path, basename_img)
-        print(f"\n[START] Processing line {i}, image={fname_img} ...")
+        logger.info(f"\n[START] Processing line {i}, image={fname_img} ...")
         logger.debug(f"{fname_img=} {df.at[i, 'Name']=}")
         if os.path.exists(fname_img):
 
@@ -76,7 +79,6 @@ def main(argv):
             keywords_cell = df.at[i, 'Keywords']
             caption_cell = df.at[i, 'Description']
             copyright_cell = df.at[i, 'Copyright']
-            save_the_file = False
             if not keywords_cell and not caption_cell and not keywords_cell:
                 continue
                 
@@ -99,7 +101,7 @@ def main(argv):
                 fname_dest_img = os.path.join(output_path, basename_img)
                 iptc.save_as(fname_dest_img)
                 stats["Num. Files Updated And Saved"] += 1
-                print(f"[END] Processed line {i}, saved image={fname_dest_img}")
+                logger.info(f"[END] Processed line {i}, saved image={fname_dest_img}")
 
             else:
                 for k, v in iptc._data.items():
@@ -112,9 +114,9 @@ def main(argv):
                     elif isinstance(v, bytes):
                         value = v.decode()
 
-                    print(f"* {key}: {value}")
+                    logger.info(f"* {key}: {value}")
 
-                print(f"[END] Processed line {i}, not saved image={fname_img}")
+                logger.info(f"[END] Processed line {i}, not saved image={fname_img}")
 
     print("\n---- STATS ----")
     for k, v in stats.items():
