@@ -21,19 +21,7 @@ META_ID_TO_STR = {
 }
 
 
-def main(argv):
-
-    input_path = argv[1]
-    fname_xls = argv[2]
-
-    output_path = None
-    if len(argv) > 3:
-        output_path = argv[3]
-        # Create output dir if not exists
-        os.makedirs(output_path, exist_ok=True)
-    else:
-        logging.basicConfig(format='%(message)s', level=logging.INFO)
-
+def main(input_path, fname_xls, output_path=None):
 
     stats = {
         "Input path": input_path,
@@ -108,4 +96,27 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+
+    if len(sys.argv) < 3:
+        print(f"Usage: {sys.argv[0]} <input_path> <filename.xls>")
+        sys.exit(100)
+
+    input_path = sys.argv[1]
+    if not os.path.isdir(input_path):
+        print(f"The directory '{input_path}' does not exist")
+        sys.exit(101)
+
+    fname_xls = sys.argv[2]
+    if not os.path.exists(fname_xls):
+        print(f"The filename '{fname_xls}' does not exist")
+        sys.exit(102)
+
+    output_path = None
+    if len(sys.argv) > 3:
+        output_path = sys.argv[3]
+        # Create output dir if not exists
+        os.makedirs(output_path, exist_ok=True)
+    else:
+        logging.basicConfig(format='%(message)s', level=logging.INFO)
+
+    main(input_path, fname_xls, output_path)

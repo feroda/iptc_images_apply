@@ -27,6 +27,6 @@ Name	Description	Keywords	Copyright Notice
 Richiede Python>=3.6
 
 ```
-$ pip install -r requirements.txt
-$ python iptc_images_apply.py input_imgs myxlsfile.xls output_imgs
+$ pip3 install -r requirements.txt
+$ python3 iptc_images_apply.py input_imgs myxlsfile.xls output_imgs
 ```
