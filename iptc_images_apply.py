@@ -4,6 +4,7 @@ import sys
 import os
 import logging
 import pandas as pd
+import math
 
 from iptcinfo3 import IPTCInfo
 
@@ -21,6 +22,13 @@ META_ID_TO_STR = {
 }
 
 
+def is_empty_or_nan(v):
+    res = not v
+    if not res and isinstance(v, float):
+        res = math.isnan(v)
+    return res
+    
+
 def main(input_path, fname_xls, output_path=None):
 
     stats = {
@@ -36,7 +44,8 @@ def main(input_path, fname_xls, output_path=None):
     for i in range(len(df)):
 
         basename_img = df.at[i, "Name"]
-        if not basename_img:
+        # NULL CELLs are interpreted as float('nan')
+        if is_empty_or_nan(basename_img):
             # Empty line, skip
             continue
         
@@ -50,22 +59,22 @@ def main(input_path, fname_xls, output_path=None):
             keywords_cell = df.at[i, 'Keywords']
             caption_cell = df.at[i, 'Description']
             copyright_cell = df.at[i, 'Copyright']
-            if not keywords_cell and not caption_cell and not keywords_cell:
+            if is_empty_or_nan(keywords_cell) and is_empty_or_nan(caption_cell) and is_empty_or_nan(keywords_cell):
                 continue
                 
             iptc = IPTCInfo(fname_img)
 
             # Update keywords if specified
-            if keywords_cell:
+            if not is_empty_or_nan(keywords_cell):
                 keywords = [x.strip() for x in keywords_cell.split(',')]
                 iptc["keywords"] = keywords
 
             # Update caption if specified
-            if caption_cell:
+            if not is_empty_or_nan(caption_cell):
                 iptc["caption/abstract"] = caption_cell.strip()
 
             # Update copyright if specified
-            if copyright_cell:
+            if not is_empty_or_nan(copyright_cell):
                 iptc["copyright notice"] = copyright_cell
 
             if output_path:
