@@ -35,7 +35,9 @@ def main(input_path, fname_xls, output_path=None):
         "Input path": input_path,
         "XLS File": fname_xls,
         "Output path": output_path or "not specified",
-        "Num. Files Read": 0,
+        "Num. Lines Read": 0,
+        "Num. Files Processed": 0,
+        "Empty Lines": [],
         "Num. Files Updated And Saved": 0,
     }
     df = pd.read_excel(fname_xls, index_col=None, names=COL_NAMES)
@@ -47,19 +49,22 @@ def main(input_path, fname_xls, output_path=None):
         # NULL CELLs are interpreted as float('nan')
         if is_empty_or_nan(basename_img):
             # Empty line, skip
+            stats["Empty Lines"].append(i+2)
             continue
         
-        stats["Num. Files Read"] += 1
+        stats["Num. Lines Read"] += 1
         fname_img = os.path.join(input_path, basename_img)
         logger.info(f"\n[START] Processing line {i}, image={fname_img} ...")
         logger.debug(f"{fname_img=} {df.at[i, 'Name']=}")
         if os.path.exists(fname_img):
 
+            stats["Num. Files Processed"] += 1
             # Check if any info is provided, otherwise skip the line
             keywords_cell = df.at[i, 'Keywords']
             caption_cell = df.at[i, 'Description']
             copyright_cell = df.at[i, 'Copyright']
             if is_empty_or_nan(keywords_cell) and is_empty_or_nan(caption_cell) and is_empty_or_nan(keywords_cell):
+                stats["Empty Lines"].append(i+2)
                 continue
                 
             iptc = IPTCInfo(fname_img)
