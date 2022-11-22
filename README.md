@@ -30,3 +30,34 @@ Richiede Python>=3.6
 $ pip3 install -r requirements.txt
 $ python3 iptc_images_apply.py input_imgs myxlsfile.xls output_imgs
 ```
+
+## Provare l'esempio
+
+```
+$ python3 iptc_images_apply.py examples/input_imgs/ examples/2photos_latin1.xlsx examples/output_imgs/
+```
+
+### File xls 2photos_latin1.xlsx
+
+![File xls di input](examples/screenshots/2photos_latin1_screenshot.png)
+
+
+### 42-a.jpg
+
+Il mio avatar sul Monte Cucco processato
+
+![Il mio avatar sul Monte Cucco processato](examples/screenshots/42-a_tags.png)
+
+I tag IPTC scritti nella foto
+
+![Tags IPTC scritti](examples/screenshots/42-a_onlytags.png)
+
+### 42-b.jpg
+
+Il mio avatar sul Mòntè Cuccò processato con accenti
+
+![Il mio avatar sul Mòntè Cuccò processato](examples/screenshots/42-b_tags.png)
+
+I tag IPTC scritti nella foto
+
+![Tags IPTC scritti](examples/screenshots/42-b_onlytags.png)
