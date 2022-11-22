@@ -1,3 +1,4 @@
 pandas
 openpyxl
 iptcinfo3
+xlrd

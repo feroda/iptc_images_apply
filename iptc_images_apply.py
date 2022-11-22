@@ -11,6 +11,7 @@ from iptcinfo3 import IPTCInfo
 # logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 logger = logging.getLogger("metaphotos")
 
+ENCODING = 'latin-1'
 COL_NAMES = ["Name", "Description", "Keywords", "Copyright"]
 META_ID_TO_STR = {
     120: 'caption/abstract',
@@ -68,7 +69,7 @@ def main(input_path, fname_xls, output_path=None):
                 stats["Empty Lines Found"].append(i+2)
                 continue
                 
-            iptc = IPTCInfo(fname_img)
+            iptc = IPTCInfo(fname_img, inp_charset=ENCODING, out_charset=ENCODING)
 
             # Update keywords if specified
             if not is_empty_or_nan(keywords_cell):
@@ -81,7 +82,7 @@ def main(input_path, fname_xls, output_path=None):
 
             # Update copyright if specified
             if not is_empty_or_nan(copyright_cell):
-                iptc["copyright notice"] = copyright_cell
+                iptc["copyright notice"] = copyright_cell.strip()
 
             if output_path:
                 fname_dest_img = os.path.join(output_path, basename_img)
